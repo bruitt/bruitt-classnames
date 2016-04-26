@@ -1,66 +1,58 @@
 var assert = require('assert');
-var cx = require('./');
+var sx = require('./');
 
-describe('cx', function() {
+describe('sx', function() {
 
   var classes = {
-    name: 'button',
-    modifiers: ['color', 'block'],
-    states: ['loading', 'disabled']
+    'Button': 'ns-Button-Button',
+    'span': 'ns-Button-span',
+    '-flat': 'ns-Button--flat',
+    '-size-xl': 'ns-Button--size-xl',
+    '_size__m': 'ns-Button--size-m'
   };
 
   it('should return empty string', function() {
-    assert.equal(cx(), '');
+    assert.equal(sx(), '');
+    assert.equal(sx.call(classes), '');
   });
 
   it('should return block name', function() {
-    assert.equal(cx(classes), 'button');
+    assert.equal(sx.call(classes, 'Button'), classes['Button']);
   });
 
   it('should return modifiers', function() {
-    assert.equal(cx(classes, { color: 'green' }), 'button button--green');
-    assert.equal(cx(classes, { color: 'green', block: true }), 'button button--green button--block');
-    assert.equal(cx(classes, { color: 'green' }, { block: true }), 'button button--green button--block');
-  });
-
-  it('should return states', function() {
-    assert.equal(cx(classes, { loading: true }), 'button is-loading');
-    assert.equal(cx(classes, { loading: true, disabled: true }), 'button is-loading is-disabled');
-    assert.equal(cx(classes, { loading: true }, { disabled: true }), 'button is-loading is-disabled');
+    assert.equal(sx.call(classes, { flat: true }), classes['-flat']);
+    assert.equal(sx.call(classes, { flat: true, size: 'xl', unknown: 'is' }), classes['-flat'] + ' ' + classes['-size-xl']);
+    assert.equal(sx.call(classes, { flat: true }, { size: 'xl' }, { unknown: 'is' }), classes['-flat'] + ' ' + classes['-size-xl']);
   });
 
   it('supports a string of class names', function() {
-    assert.equal(cx({ name: 'button' }, 'a'), 'button a');
-    assert.equal(cx(classes, 'a'), 'button a');
-    assert.equal(cx(classes, 'a', 'b c'), 'button a b c');
+    assert.equal(sx.call(classes, 'Button', 'span', 'unknwn'), classes['Button'] + ' ' + classes['span']);
+    assert.equal(sx.call(classes, 'span'), classes['span']);
+    assert.equal(sx.call(classes, 'Button', 'span unknw'), classes['Button'] + ' ' + classes['span']);
   });
 
   it('supports an array of class names', function() {
-    assert.equal(cx(classes, ['a']), 'button a');
-    assert.equal(cx(classes, ['a'], ['b', 'c']), 'button a b c');
+    assert.equal(sx.call(classes, ['Button']), classes['Button']);
+    assert.equal(sx.call(classes, ['Button'], ['span', 'unknwn']), classes['Button'] + ' ' + classes['span']);
   });
 
   it('should ignore, except for valid objects', function() {
-    assert.equal(cx(classes, null, undefined, 1, 0, true, false, '', { color: 'green' }, 'a', ['b', 'c']), 'button button--green a b c');
+    assert.equal(sx.call(classes, null, undefined, 1, 0, true, false, '', { size: 'xl' }, 'a', ['span', 'c']), classes['-size-xl'] + ' ' + classes['span']);
   });
 
   it('should be trimmed', function() {
-    assert.equal(cx(classes, '', ' b  ', [' ']), 'button b');
+    assert.equal(sx.call(classes, '', ' Button  ', '  span', [' ']), classes['Button'] + ' ' + classes['span']);
   });
 
   it('should dedupe', function() {
-    assert.equal(cx(classes, 'foo', 'bar', 'foo', 'bar'), 'button foo bar');
+    assert.equal(sx.call(classes, 'Button', 'span', 'Button', 'span'), classes['Button'] + ' ' + classes['span']);
   });
 
   it('should be custom prefixes', function() {
-    cx.prefixes.modifiers = '-';
-    assert.equal(cx(classes, { color: 'green', block: true }), 'button -green -block');
-  });
-
-  it('should be custom rules', function() {
-    cx.prefixes.foo = 'foo-';
-    classes.foo = ['a', 'b'];
-    assert.equal(cx(classes, { a: true, b: true }), 'button foo-a foo-b');
+    sx.settings.prefix = '_';
+    sx.settings.separator = '__';
+    assert.equal(sx.call(classes, { size: 'm' }), classes['_size__m']);
   });
 
 });

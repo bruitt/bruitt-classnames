@@ -1,25 +1,30 @@
 {
-  "name": "bem-classnames",
-  "version": "1.0.6",
-  "description": "A simple utility to manage BEM class names on React",
+  "name": "suitnames",
+  "version": "1.0.0",
+  "description": "A simple utility to manage CSS modules with SUIT CSS -like naming conventions on React",
   "main": "index.js",
   "scripts": {
     "test": "mocha test.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pocotan001/bem-classnames.git"
+    "url": "https://github.com/morhetz/suitnames.git"
   },
   "keywords": [
-    "bem",
+    "suitcss",
+    "cssmodules",
     "classname",
     "component",
     "css",
     "react",
     "utility"
   ],
-  "author": "pocotan001",
+  "author": "Pavel Pertsev <morhetz@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/morhetz/suitnames/issues"
+  },
+  "homepage": "https://github.com/morhetz/suitnames#readme",
   "devDependencies": {
     "mocha": "^2.2.5"
   }

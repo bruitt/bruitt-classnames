@@ -1,38 +1,40 @@
-# bem-classnames
+# suitnames
 
-[![CircleCI](https://img.shields.io/circleci/project/pocotan001/bem-classnames.svg)](https://circleci.com/gh/pocotan001/bem-classnames)
-[![npm](https://img.shields.io/npm/v/bem-classnames.svg)](https://npmjs.org/package/bem-classnames)
-[![Bower](https://img.shields.io/bower/v/bem-classnames.svg)](https://github.com/pocotan001/bem-classnames)
+suitnames is a simple utility to manage CSS modules with SUIT CSS -like naming
+conventions on React.
 
-
-bem-classnames is a simple utility to manage BEM class names on React.
-
-Inspired by [classnames](https://github.com/JedWatson/classnames).
+Shamefully based on [bem-classnames](https://github.com/pocotan001/bem-classnames),
+which is in turn
+inspired by [classnames](https://github.com/JedWatson/classnames).
 
 ``` sh
-npm install bem-classnames
+npm install suitnames
 ```
 
 ## Usage
 
 ``` js
-var cx = require('bem-classnames');
+var styles = require('style.css');
+var sx = require('suitnames').bind(styles);
 
-cx(/* classes, [...props|className] */);
+sx('elementSelector')
+sx('BlockSelector', this.props)
+sx(/* [...props|className] */);
 ```
 
 **Simple**
 
-``` js
-var classes = {
-  name: 'button',
-  modifiers: ['color', 'block'],
-  states: ['disabled']
-};
+Attention: classes would be added only if they are exported from cssmodules
+style, otherwise they would be skipped.
+Works best with `localIdentName=[name]-[local]`.
 
-cx(classes, { color: 'green', block: true });  // "button button--green button--block"
-cx(classes, { disabled: true });  // "button is-disabled"
-cx(classes, 'a b', ['c', 'd']);  // "button a b c d"
+``` js
+var styles = require('Button.css');
+var sx = require('suitnames').bind(styles);
+
+sx('Button', { color: 'green', block: true });  // "Button-Button Button--color-green Button--block"
+sx({ disabled: true });  // "Button--disabled"
+sx('a b', ['c', 'd']);  // "Button-a Button-b Button-c Button-d"
 ```
 
 **Custom prefix**
@@ -40,82 +42,13 @@ cx(classes, 'a b', ['c', 'd']);  // "button a b c d"
 ``` js
 // Default prefixes:
 //
-// cx.prefixes = {
-//   modifiers: '{name}--',
-//   states: 'is-'
+// sx.settings = {
+//   prefix: '-',
+//   separator: '-'
 // };
 
-cx.prefixes.modifiers = '-';
-cx(classes, { color: 'green' });  // "button -green"
-
-// You can add the prefixes
-cx.prefixes.foo = 'foo-';
-classes.foo = ['a', 'b'];
-cx(classes, { a: true, b: true });  // "button foo-a foo-b"
-```
-
-**with React and ES6**
-
-``` js
-import React from 'react';
-import cx from 'bem-classnames';
-
-class Button extends React.Component {
-  render() {
-    let classes = {
-      name: 'button',
-      modifiers: ['color', 'size'],
-      states: ['disabled']
-    };
-
-    return (
-      <button className={cx(classes, this.props, this.props.className)}>
-        {this.props.children}
-      </button>
-    );
-  }
-}
-
-React.render(
-  <Button color="green" size="xl" disabled={true} className="a b">Alo!</Button>,
-  document.getElementById('example')
-);
-
-// "button button--green button--xl a b is-disabled"
-```
-
-**for manage the elements of BEM**
-
-``` js
-class Button extends React.Component {
-  render() {
-    let classes = {
-      button: {
-        name: 'button',
-        modifiers: ['color', 'size'],
-        states: ['disabled']
-      },
-      button__inner: {
-        name: 'button__inner',
-        modifiers: ['align']
-      }
-    };
-
-    return (
-      <button className={cx(classes.button, this.props, this.props.className)}>
-        <span className={cx(classes.button__inner, this.props)}>
-          {this.props.children}
-        </span>
-      </button>
-    );
-  }
-}
-
-React.render(
-  <Button color="green" align="center">Alo!</Button>,
-  document.getElementById('example')
-);
-
-// button -> "button button--green"
-// span -> "button__inner button__inner--center"
+sx.settings.prefix = '_';
+sx.settings.separator = '---';
+sx(styles, { flat: true });  // => styles['_flat']
+sx(styles, { country: 'gb' });  // => styles['_country---gb']
 ```

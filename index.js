@@ -4,19 +4,26 @@
   } else if (typeof exports === 'object') {
     module.exports = factory(); // CommonJS
   } else {
-    global.cx = factory(); // Globals
+    global.suitnames = factory(); // Globals
   }
 }(this, function() {
   'use strict';
 
-  var prefixes = {
-    modifiers: '{name}--',
-    states: 'is-'
+  var settings = {
+    prefix: '-',
+    separator: '-'
   };
 
-  var push  = Array.prototype.push;
   var slice = Array.prototype.slice;
   var toString = Object.prototype.toString;
+
+  function flatten() {
+    return [].concat.apply([], this);
+  }
+
+  function includes(obj) {
+    return (this.indexOf(obj) !== -1);
+  }
 
   /**
    * toType([]) -> 'array'
@@ -35,7 +42,7 @@
    * @return {string}
    */
   var is = {};
-  ['string', 'boolean', 'array', 'object'].forEach(function(type) {
+  ['string', 'boolean', 'array', 'object', 'number'].forEach(function(type) {
     is[type] = function(object) {
       return toType(object) === type;
     };
@@ -89,85 +96,73 @@
     return names.join(' ').trim();
   }
 
-  /**
-   * detectPrefix('modifiers', { name: 'foo' }) -> 'foo--'
-   *
-   * @param {string} prefixName
-   * @param {Object} classes
-   * @return {string}
-   */
-  function detectPrefix(prefixName, classes) {
-    return (prefixes[prefixName] || '').replace(/\{([\w-]*?)\}/g, function (match, p1) {
-      return classes[p1] || '';
-    });
+  function getModifier(key, value, prefix, separator) {
+    if (is.string(value) || is.number(value)) {
+      return prefix + key + separator + value;
+    }
+    return prefix + key;
   }
 
   /**
-   * getClassNamesByProps(['a'], { a: 'foo' }, '-') -> [ '-foo' ]
+   * getClassNamesByProps(['a'], { a: 'foo' }, '-', '-') -> [ '-a-foo' ]
    *
    * @param {string[]} propNames
-   * @param {Object} props
+   * @param {Object|Array} props
    * @param {string} [prefix]
    * @return {string[]}
    */
-  function getClassNamesByProps(propNames, props, prefix) {
+  function getClassNamesByProps(propNames, props, prefix, separator) {
     prefix = prefix || '';
+    separator = separator || '';
 
-    return propNames
-      .filter(function(name) {
-        return !!props[name];
-      })
-      .map(function(name) {
-        return prefix + (is.boolean(props[name]) ? name : props[name]);
-      });
+    if (is.object(props)) {
+      return  Object.keys(props)
+        .map(function(name) {
+          return propNames[getModifier(name, props[name], prefix, separator)];
+        });
+    }
+
+    if (is.array(props)) {
+      return props
+        .map(function(name) {
+          return propNames[name];
+        });
+    }
+
+    return [];
   }
 
   /**
-   * @param {Object} classes
+   * @context {Object} classes
    * @param {...Object|string} [props|className]
    * @return {string}
    */
-  function cx(classes/* , [...props|className] */) {
+  function suitnames(/* , [...props|className] */) {
+    var classes = this;
     if (!classes) {
       return '';
     }
 
-    var args = slice.call(arguments).slice(1);
-    var classNames = [];
+    var prefix = '-';
+    var separator = '-';
 
-    Object.keys(classes).forEach(function(name) {
-      switch (toType(classes[name])) {
-        case 'string':
-          push.apply(classNames, split(classes[name]));
-          break;
-        case 'array':
-          args.forEach(function (arg) {
-            if (is.object(arg)) {
-              var names = getClassNamesByProps(classes[name], arg, detectPrefix(name, classes));
-              push.apply(classNames, names);
-            }
-          });
-          break;
-        default:
-      }
-    });
-
-    args.forEach(function (arg) {
+    var args = slice.call(arguments);
+    var classNames = flatten.call(args.map(function (arg) {
       switch (toType(arg)) {
         case 'string':
-          push.apply(classNames, split(arg));
-          break;
+          return getClassNamesByProps(classes, split(arg), settings.prefix, settings.separator);
         case 'array':
-          push.apply(classNames, arg);
-          break;
+        case 'object':
+          return getClassNamesByProps(classes, arg, settings.prefix, settings.separator);
         default:
-      }
-    });
+          break;
+      };
+    }));
 
     return toClassName(exclude(uniq(classNames)));
   }
 
-  cx.prefixes = prefixes;
+  suitnames.settings = settings;
 
-  return cx;
+  return suitnames;
 }));
