@@ -14,6 +14,7 @@ describe('sx', function() {
   it('should return empty string', function() {
     assert.equal(sx(), '');
     assert.equal(sx.call(classes), '');
+    assert.equal(sx.call(classes, { flat: false }), '');
   });
 
   it('should return block name', function() {

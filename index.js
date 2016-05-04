@@ -117,6 +117,9 @@
 
     if (is.object(props)) {
       return  Object.keys(props)
+        .filter(function(name) {
+          return props[name];
+        })
         .map(function(name) {
           return propNames[getModifier(name, props[name], prefix, separator)];
         });
