@@ -2,7 +2,7 @@
   "name": "bruitt-classnames",
   "version": "1.1.0",
   "description": "A simple utility to manage CSS modules with SUIT CSS -like naming conventions on React",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "babel lib -d dist",
     "prepublish": "BABEL_ENV=production npm run build",
