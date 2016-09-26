@@ -1,5 +1,5 @@
 var assert = require('assert');
-var sx = require('./');
+var sx = require('./').default;
 
 describe('sx', function() {
 
@@ -13,47 +13,47 @@ describe('sx', function() {
 
   it('should return empty string', function() {
     assert.equal(sx(), '');
-    assert.equal(sx.call(classes), '');
-    assert.equal(sx.call(classes, { flat: false }), '');
+    assert.equal(sx(classes), '');
+    assert.equal(sx(classes, { flat: false }), '');
   });
 
   it('should return block name', function() {
-    assert.equal(sx.call(classes, 'Button'), classes['Button']);
+    assert.equal(sx(classes, 'Button'), classes['Button']);
   });
 
   it('should return modifiers', function() {
-    assert.equal(sx.call(classes, { flat: true }), classes['-flat']);
-    assert.equal(sx.call(classes, { flat: true, size: 'xl', unknown: 'is' }), classes['-flat'] + ' ' + classes['-size-xl']);
-    assert.equal(sx.call(classes, { flat: true }, { size: 'xl' }, { unknown: 'is' }), classes['-flat'] + ' ' + classes['-size-xl']);
+    assert.equal(sx(classes, { flat: true }), classes['-flat']);
+    assert.equal(sx(classes, { flat: true, size: 'xl', unknown: 'is' }), classes['-flat'] + ' ' + classes['-size-xl']);
+    assert.equal(sx(classes, { flat: true }, { size: 'xl' }, { unknown: 'is' }), classes['-flat'] + ' ' + classes['-size-xl']);
   });
 
   it('supports a string of class names', function() {
-    assert.equal(sx.call(classes, 'Button', 'span', 'unknwn'), classes['Button'] + ' ' + classes['span']);
-    assert.equal(sx.call(classes, 'span'), classes['span']);
-    assert.equal(sx.call(classes, 'Button', 'span unknw'), classes['Button'] + ' ' + classes['span']);
+    assert.equal(sx(classes, 'Button', 'span', 'unknwn'), classes['Button'] + ' ' + classes['span']);
+    assert.equal(sx(classes, 'span'), classes['span']);
+    assert.equal(sx(classes, 'Button', 'span unknw'), classes['Button'] + ' ' + classes['span']);
   });
 
   it('supports an array of class names', function() {
-    assert.equal(sx.call(classes, ['Button']), classes['Button']);
-    assert.equal(sx.call(classes, ['Button'], ['span', 'unknwn']), classes['Button'] + ' ' + classes['span']);
+    assert.equal(sx(classes, ['Button']), classes['Button']);
+    assert.equal(sx(classes, ['Button'], ['span', 'unknwn']), classes['Button'] + ' ' + classes['span']);
   });
 
   it('should ignore, except for valid objects', function() {
-    assert.equal(sx.call(classes, null, undefined, 1, 0, true, false, '', { size: 'xl' }, 'a', ['span', 'c']), classes['-size-xl'] + ' ' + classes['span']);
+    assert.equal(sx(classes, null, undefined, 1, 0, true, false, '', { size: 'xl' }, 'a', ['span', 'c']), classes['-size-xl'] + ' ' + classes['span']);
   });
 
   it('should be trimmed', function() {
-    assert.equal(sx.call(classes, '', ' Button  ', '  span', [' ']), classes['Button'] + ' ' + classes['span']);
+    assert.equal(sx(classes, '', ' Button  ', '  span', [' ']), classes['Button'] + ' ' + classes['span']);
   });
 
   it('should dedupe', function() {
-    assert.equal(sx.call(classes, 'Button', 'span', 'Button', 'span'), classes['Button'] + ' ' + classes['span']);
+    assert.equal(sx(classes, 'Button', 'span', 'Button', 'span'), classes['Button'] + ' ' + classes['span']);
   });
 
   it('should be custom prefixes', function() {
     sx.settings.prefix = '_';
     sx.settings.separator = '__';
-    assert.equal(sx.call(classes, { size: 'm' }), classes['_size__m']);
+    assert.equal(sx(classes, { size: 'm' }), classes['_size__m']);
   });
 
 });
