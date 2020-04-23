@@ -1,12 +1,12 @@
 {
   "name": "@bruitt/classnames",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "A simple utility to manage CSS modules with SUIT CSS -like naming conventions on React",
-  "module": "dist/classnames.m.js",
-  "unpkg": "dist/classnames.min.js",
+  "source": "src/index.js",
   "main": "dist/classnames.js",
+  "module": "dist/classnames.module.js",
   "scripts": {
-    "build": "bundt",
+    "build": "microbundle",
     "test": "mocha test.js"
   },
   "repository": {
@@ -30,10 +30,10 @@
   },
   "homepage": "https://github.com/bruitt/classnames#readme",
   "devDependencies": {
-    "bundt": "^0.4.0",
     "mocha": "^3.0.2"
   },
   "dependencies": {
+    "microbundle": "^0.11.0",
     "prettier": "^2.0.5",
     "ramda": "^0.22.1"
   }

@@ -66,7 +66,7 @@ let classnames = (classes, ...args) => {
   return toClassName(exclude(uniq(classNames)))
 }
 
-export let bind = classes => (...args) => classnames(classes, ...args)
+export let withStyles = classes => (...args) => classnames(classes, ...args)
 
 classnames.settings = settings
 
