@@ -3,18 +3,18 @@ import type from "ramda/src/type"
 import uniq from "ramda/src/uniq"
 
 let settings = {
-  prefix: "-",
-  separator: "-"
+  prefix: "_",
+  separator: "-",
 }
 
-let is = {};
-["String", "Boolean", "Array", "Object", "Number"].forEach(typeKey => {
+let is = {}
+;["String", "Boolean", "Array", "Object", "Number"].forEach(typeKey => {
   is[typeKey] = object => type(object) === typeKey
 })
 
 let exclude = array => {
   return array
-    .filter(el => is.String(el) && (el.trim() !== ""))
+    .filter(el => is.String(el) && el.trim() !== "")
     .map(className => className.trim())
 }
 
@@ -37,7 +37,7 @@ let getClassNames = (propNames, props, prefix = "", separator = "") => {
   }
 
   if (is.Array(props)) {
-    return props.map(name => propNames[name])
+    return props.map(name => propNames[name] || name)
   }
 
   return []
@@ -65,6 +65,8 @@ let classnames = (classes, ...args) => {
   let classNames = flatten(args.map(mapArg))
   return toClassName(exclude(uniq(classNames)))
 }
+
+export let bind = classes => (...args) => classnames(classes, ...args)
 
 classnames.settings = settings
 

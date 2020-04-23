@@ -64,6 +64,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["bundt", "npm:0.4.0"],
             ["mocha", "npm:3.5.3"],
+            ["prettier", "npm:2.0.5"],
             ["ramda", "npm:0.22.1"]
           ],
           "linkType": "SOFT"
@@ -76,6 +77,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@bruitt/classnames", "workspace:."],
             ["bundt", "npm:0.4.0"],
             ["mocha", "npm:3.5.3"],
+            ["prettier", "npm:2.0.5"],
             ["ramda", "npm:0.22.1"]
           ],
           "linkType": "SOFT"
@@ -456,6 +458,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/path-is-absolute-npm-1.0.1-31bc695ffd-1.zip/node_modules/path-is-absolute/",
           "packageDependencies": [
             ["path-is-absolute", "npm:1.0.1"]
+          ],
+          "linkType": "HARD"
+        }]
+      ]],
+      ["prettier", [
+        ["npm:2.0.5", {
+          "packageLocation": "./.yarn/cache/prettier-npm-2.0.5-f0ee4e15ce-1.zip/node_modules/prettier/",
+          "packageDependencies": [
+            ["prettier", "npm:2.0.5"]
           ],
           "linkType": "HARD"
         }]
